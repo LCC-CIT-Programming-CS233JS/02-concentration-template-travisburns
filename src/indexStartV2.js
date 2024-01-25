@@ -46,28 +46,29 @@ class Concentration
          fillImages() {
             const values = ['a', 'k', 'q', 'j', 't', '9', '8', '7', '6', '5'];
             const suits = ['h', 's'];
-            let index = 0;
+            const index = 0;
             for (let value = 0; value < values.length; value++){
                 for (let suit = 0; suit < suits.length; suit ++) {
                     this.images[index] = "card" + values[value] + suits[suit] + ".jpg";
-                    index++;
+                    this.index++;
                 }
             }
         }
         //do this yourself underneath the comment
 
          handleClick(index) {
-            var index = this.id;
-            var cardImage = imagePath + images[index];
-            this.style.backgroundImage = 'url(' + cardImage + ')';
-            disableCard(index);
-            if (firstPick == -1) {
-                firstPick = index;
+           
+            const cardImage = this.imagePath + this.images[index];
+            const card = document.getElementById(index);
+            card.style.backgroundImage = 'url(' + cardImage + ')';
+            this.disableCard(index);
+            if (this.firstPick == -1) {
+                this.firstPick = index;
             }
             else {
-                secondPick = index;
-                disableAllCards();
-                setTimeout(checkCards, 2000);
+                this.secondPick = index;
+                this.disableAllCards();
+                setTimeout(this.checkCards, 2000);
             }
         }
 
@@ -78,7 +79,7 @@ class Concentration
 enableAllCards() {
     var cards = document.getElementsByName("card");
     for (var i = 0; i < cards.length; i++) {
-        cards[i].onclick = handleClick;
+        cards[i].onclick = this.handleClick.bind(this, i);
         cards[i].style.cursor = 'pointer';
     }
 }
@@ -89,12 +90,21 @@ enableAllCards() {
     const cards = document.getElementsByName("card");
     for (var i = 0; i < cards.length; i++) {
         if (cards[i].style.backgroundImage != 'none') {
-            cards[i].onclick = this.handleClick.bind(this.i);
+            cards[i].onclick = this.handleClick.bind(this, i);
             cards[i].style.cursor = 'pointer';
         }
     }
 }
 
+
+// shows the number of matches and tries in the status element on the page
+ showMatches() {
+    const status = document.getElementById("status");
+    if (this.matches < 10)
+        status.innerHTML = 'Matches: ' + this.matches + " Tries: " + this.tries;
+    else
+        status.innerHTML = "Congratulations!  You found all 10 matches in " + this.tries + " tries!";   
+}
     /*
         Convert each function to a method.  
         -   Move it inside the class.
@@ -109,6 +119,67 @@ enableAllCards() {
             -   before: cards[i].onclick = this.handleClick.bind(this);
             -   should be: cards[i].onclick = this.handleClick.bind(this, i);
     */
+
+
+             checkCards() {
+                // increment the number of tries
+                tries++;
+                if (this.isMatch() == true) {
+                    this.matches++;
+                    removeCard(this.firstPick);
+                    removeCard(this.secondPick);
+                    if (this.matches < 10) {
+                        enableAllRemainingCards();
+                    }
+                }
+                else {
+                    this.showBack(this.firstPick);
+                    this.showBack(this.secondPick);
+                    this.enableAllRemainingCards();
+                }
+                this.showMatches();
+                this.firstPick = -1;
+                this.secondPick = -1;
+            }        
+            
+            
+
+       // disable all of the cards
+ disableAllCards() {
+    for (var i = 0; i < this.images.length; i++)
+        this.disableCard(i);
+}     
+
+// determines if the images in firstPick and secondPick are a match
+// 2 cards are a match if they have the same value
+// cardvs.jpg is the pattern for card file names
+ isMatch() {
+    if (this.images[this.firstPick].substr(4, 1) == this.images[this.secondPick].substr(4, 1))
+        return true;
+    else
+        return false;
+}
+
+
+// shows the back for all cards
+// calls showBack in the body of a for loop
+  showAllBacks() {
+    const cards = document.getElementsByName("card");
+    for (var i = 0; i < cards.length; i++) {
+        this.showBack(i);
+    }    
+}
+
+// shows the back of one card based on it's index
+// each card has an id attribute set to it's index in the html page
+// the backgroundImage (style) is set to the url of the image
+// for a card back to "show the back"
+    showBack(index) {
+    const backImage = this.imagePath + 'black_back.jpg';
+    const card = document.getElementById(index);
+    card.style.backgroundImage = 'url(' + backImage + ')';
+}
+
 }
 
 // create a variable called concentration
