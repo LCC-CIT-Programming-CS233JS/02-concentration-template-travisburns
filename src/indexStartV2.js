@@ -99,6 +99,9 @@ enableCard(index) {
             this.matches++;
             this.removeCard(this.firstPick);
             this.removeCard(this.secondPick);
+            this.disableCard(this.firstPick);
+            this.disableCard(this.secondPick)
+            
             if (this.matches < 10) {
                 this.enableAllRemainingCards();
             }
