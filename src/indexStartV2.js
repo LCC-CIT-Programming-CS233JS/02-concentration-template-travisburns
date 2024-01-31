@@ -33,11 +33,9 @@ class Concentration {
     init() {
         this.fillImages();
         this.showAllBacks();
-        this.enableAllCards();
+        // this.enableAllCards();
         // this.shuffleImages();
         this.showMatches();
-       
-        
     }
 
     fillImages() {
@@ -57,7 +55,6 @@ class Concentration {
         const cardImage = this.imagePath + this.images[index];
         const card = document.getElementById(index);
         card.style.backgroundImage = 'url(' + cardImage + ')';
-        this.removeCard(index);
         if (this.firstPick === -1) {
             this.firstPick = index;
         } else {
@@ -72,11 +69,17 @@ class Concentration {
     // It also sets the cursor (part of the style) to 'pointer'
     enableAllCards() {
         const cards = document.getElementsByName("card");
-        for (let i = 0; i < cards.length; i++) {
-            cards[i].onclick = this.handleClick.bind(this, i);
-            cards[i].style.cursor = 'pointer';
-        }
+    for (let i = 0; i < cards.length; i++) {
+        this.enableCard(i);
     }
+
+}
+
+enableCard(index) {
+    const card = document.getElementById(index);
+    card.onclick = () => this.handleClick(index);
+    card.style.cursor = 'pointer';
+}
 
     // enables (see enable all) only the cards whose backgroundImage
     // style property is not 'none'
@@ -84,8 +87,7 @@ class Concentration {
         const cards = document.getElementsByName("card");
         for (let i = 0; i < cards.length; i++) {
             if (cards[i].style.backgroundImage !== 'none') {
-                cards[i].onclick = () => this.handleClick(i);
-                cards[i].style.cursor = 'pointer';
+                this.enableCard(i);
             }
         }
     }
@@ -112,9 +114,16 @@ class Concentration {
 
     // disable all of the cards
     disableAllCards() {
+        const cards = document.getElementsByName("card");
         for (let i = 0; i < this.images.length; i++) {
-            this.removeCard(i);
+            this.disableCard(i);
         }
+    }
+
+    disableCard(index) {
+        const card = document.getElementById(index);
+        card.onclick = null;
+        card.style.cursor = 'default';  // Optionally, change the cursor to default to visually indicate it's disabled
     }
 
     // determines if the images in firstPick and secondPick are a match
@@ -153,7 +162,7 @@ class Concentration {
             - should be: cards[i].onclick = this.handleClick.bind(this, i);
     */
 
-    showAllBacks() {
+    showAllBacks(index) {
         const cards = document.getElementsByName("card");
         for (let i = 0; i < cards.length; i++) {
             this.showBack(i);
@@ -171,9 +180,7 @@ class Concentration {
     }
 
     removeCard(index) {
-        const card = document.getElementById(index);
-        
-        card.onclick = null;
+        document.getElementById(index).style.backgroundImage = 'none';
     }
 }
 
@@ -183,4 +190,7 @@ class Concentration {
 // set the concentration variable to an instance of Concentration
 
 let concentration;
-window.onload = () => { concentration = new Concentration(); };
+window.onload = () => { 
+    concentration = new Concentration();
+    concentration.enableAllCards();
+};
