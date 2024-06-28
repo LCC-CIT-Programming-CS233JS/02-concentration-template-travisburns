@@ -1,5 +1,7 @@
 # Concentration Card Game
 
+![concentrationgamesaffari](https://github.com/LCC-CIT-Programming-CS233JS/02-concentration-template-travisburns/assets/41456635/d4bd6489-d605-4354-bf37-56c50430615e)
+
 ## Project Overview
 * A concentration game with 20 cards (10 pairs)
 * Cards are initially face down
